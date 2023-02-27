@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-const Wrapper = styled.section`
+const Wrapper = styled.section `
   display: grid;
   align-items: center;
   .logo {
@@ -30,6 +30,7 @@ const Wrapper = styled.section`
     color: var(--primary-500);
     cursor: pointer;
     letter-spacing: var(--letterSpacing);
+    text-transform: capitalize;
   }
 `
 export default Wrapper

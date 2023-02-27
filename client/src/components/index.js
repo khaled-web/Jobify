@@ -1,7 +1,9 @@
 import Logo from './Logo';
-import Alert from './Alert';
+import FormRow from './FormRow';
+import Alert from './Alert'
 
 export {
  Logo,
+ FormRow,
  Alert
 }
