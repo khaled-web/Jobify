@@ -23,7 +23,7 @@ const AppProvider = ({children})=>{
  //displayAlert-Function
  const displayAlert = ()=>{
   dispatch({type:DISPLAY_ALERT})
-  clearAlert()
+  clearAlert( )
  }
  //clearAlert
  const clearAlert = ()=>{
