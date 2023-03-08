@@ -1,39 +1,57 @@
+//..............
+//importingData
+//..............
 //express
-import express from 'express'
+const express = require('express');
 const app = express()
 //env
-import dotenv from 'dotenv'
-dotenv.config()
-//connectDB
-import connectDB from './db/connect.js'
-//routers
-import authRoutes from './routes/authRoutes.js'
-import jobRoutes from './routes/jobRoutes.js'
-//middleware
-import errorHandlerMiddleware from './middleware/error-handler.js'
-import notFoundMiddleWear from './middleware/not-found.js'
-
+require('dotenv').config()
+//express-async-errors instead of try-catch
+require('express-async-errors')
+//ConnectDB
+const connectDB = require('./db/connect.js')
 //routes
-app.get('/', (req, res) => {
- // throw new Error('error')....errorHandlerMiddleware
- res.send('Welcome!')
-})
-app.use('/api/v1/auth', authRoutes)
-app.use('/api/v1/job', jobRoutes)
+const authRoutes = require('./routes/authRoutes.js')
+const jobsRoutes = require('./routes/jobRoutes.js')
+//middleware
+const notFoundMiddleware = require('./middleware/not-found.js')
+const errorHandlerMiddleware = require('./middleware/error-handler.js')
 
-//route not found-middleWear
-app.use(notFoundMiddleWear)
-//code error-middleWear
-app.use(errorHandlerMiddleware)
-//data.json
+
+//.........
+//AppData
+//.........
+//usingData.jsonInPostman
 app.use(express.json())
+//GeneralRoute
+app.get('/', (req, res) => {
+ // throw new Error('error')
+ res.json({
+  msg: "Welcome"
+ })
+})
+
+app.get('/api/v1', (req, res) => {
+ // throw new Error('error')
+ res.json({
+  msg: "api"
+ })
+})
+//routes
+app.use('/api/v1/auth', authRoutes)
+app.use('/api/v1/job', jobsRoutes)
+
+//middleware
+app.use(notFoundMiddleware)
+app.use(errorHandlerMiddleware)
 
 const port = process.env.PORT || 4000
+
 const start = async () => {
  try {
   await connectDB(process.env.MONGO_URL)
   app.listen(port, () => {
-   console.log(`server is listening on port ${port}...`)
+   console.log(`Server is listening on port ${port}`)
   })
  } catch (error) {
   console.log(error)

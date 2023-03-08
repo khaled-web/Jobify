@@ -1,15 +1,24 @@
-import express from 'express'
-const router = express.Router()
-import {
+//.........
+//importing
+//.........
+const express = require('express');
+const router = express.Router();
+const {
  createJob,
  deleteJob,
- getAllJob,
+ getAllJobs,
  updateJob,
- showStatus
-} from '../controller/jobController.js'
+ showStats
+} = require('../Controllers/jobController.js')
 
-router.route('/').get(getAllJob).post(createJob);
-router.route('/status').get(showStatus);
+//....
+//app
+//....
+router.route('/').get(getAllJobs).post(createJob)
 router.route('/:id').delete(deleteJob).patch(updateJob)
+router.route('/showStats').get(showStats)
 
-export default router;
+//.........
+//exporting
+//.........
+module.exports = router;
