@@ -1,7 +1,12 @@
-import React from 'react'
+//...........
+//Importing
+//...........
+
+import React, {useEffect} from 'react'
 import {Logo, FormRow, Alert} from '../components'
 import Wrapper from '../assets/wrappers/RegisterPage'
 import { UseAppContext } from '../context/appContext'
+import {useNavigate} from 'react-router-dom'
 
 //initial State
 const initialState = {
@@ -10,13 +15,25 @@ const initialState = {
   password:'',
   isMember:true,
 }
+//...........
+//APP
+//...........
 
 const Register = () => {
   //useState
   const [values, setValues]=React.useState(initialState)
   //global state and useNavigate
-  
-  const {isLoading, showAlert, displayAlert} = UseAppContext();
+  const navigate = useNavigate()
+  //contextData
+  const {
+    user,
+    isLoading,
+    showAlert,
+    displayAlert,
+    registerUser,
+    loginUser,
+    setupUser
+  } = UseAppContext();
   //ToggleMember-Function
   const toggleMember = ()=>{
     setValues({...values, isMember:!values.isMember})
@@ -33,8 +50,26 @@ const Register = () => {
       displayAlert()
       return 
     }
+    //register
+    const currentUser = {name, email ,password}
+    if(isMember){
+      // loginUser(currentUser)
+      setupUser({currentUser, endPoint:'login', alertText:'Login Successful! Redirecting...'})
+    }
+    else{
+      // registerUser(currentUser)
+      setupUser({currentUser, endPoint:'register', alertText:'User Created! Redirecting...'})
+    }
     console.log(values)
   }
+  //useEffect
+  useEffect(()=>{
+    if(user){
+      setTimeout(()=>{
+        navigate('/')
+      },3000)
+    }
+  },[user, navigate])
   return (
     <Wrapper className='full-page'>
       <form className='form' onSubmit={onSubmit}>
@@ -49,7 +84,7 @@ const Register = () => {
         <FormRow type="email" name="email" value={values.email} handleChange={handleChange}/>
         {/* password input */}
         <FormRow type="password" name="password" value={values.password} handleChange={handleChange}/>
-        <button type='submit' className='btn btn-block'>
+        <button type='submit' className='btn btn-block' disabled={isLoading}>
           submit
         </button>
         <p>
@@ -62,5 +97,7 @@ const Register = () => {
     </Wrapper>
   )
 }
-
+//...........
+//Exporting
+//...........
 export default Register

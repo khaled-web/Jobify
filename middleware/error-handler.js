@@ -1,9 +1,16 @@
+//.........
+//importing
+//.........
 const {
   CustomAPIError
 } = require('../errors')
 const {
   StatusCodes
 } = require('http-status-codes')
+
+//....
+//app
+//....
 const errorHandlerMiddleware = (err, req, res, next) => {
   if (err instanceof CustomAPIError) {
     return res.status(err.statusCode).json({
@@ -14,5 +21,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
     err
   })
 }
-
+//.........
+//exporting
+//.........
 module.exports = errorHandlerMiddleware

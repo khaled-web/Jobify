@@ -10,6 +10,8 @@ require('dotenv').config()
 require('express-async-errors')
 //ConnectDB
 const connectDB = require('./db/connect.js')
+//morgan
+const morgan = require('morgan')
 //routes
 const authRoutes = require('./routes/authRoutes.js')
 const jobsRoutes = require('./routes/jobRoutes.js')
@@ -21,6 +23,10 @@ const errorHandlerMiddleware = require('./middleware/error-handler.js')
 //.........
 //AppData
 //.........
+//morgan..infoTheWarningMessageOnConsole
+if (process.env.NODE_ENV !== 'production') {
+ app.use(morgan('dev'))
+}
 //usingData.jsonInPostman
 app.use(express.json())
 //GeneralRoute
