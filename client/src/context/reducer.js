@@ -9,7 +9,9 @@ import {
  LOGIN_USER_ERROR,
  SETUP_USER_BEGIN,
  SETUP_USER_SUCCESS,
- SETUP_USER_ERROR
+ SETUP_USER_ERROR,
+ TOGGLE_SIDEBAR,
+ LOGOUT_USER
 } from './action'
 
 const reducer = (state, action) => {
@@ -124,6 +126,24 @@ const reducer = (state, action) => {
    alertText: action.payload.msg
   }
  }
+ //toggle-sidebar
+ if (action.type === TOGGLE_SIDEBAR) {
+  return {
+   ...state,
+   showSidebar: !state.showSidebar
+  }
+ }
+ //logoutUser
+ if (action.type === LOGOUT_USER) {
+  return {
+   ...state,
+   user: null,
+   token: null,
+   userLocation: '',
+   jobLocation: ''
+  }
+ }
+
 
  throw new Error(`no such action : ${action.type}`)
 }

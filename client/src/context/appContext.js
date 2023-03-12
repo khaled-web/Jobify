@@ -18,7 +18,9 @@ import {
  LOGIN_USER_ERROR,
  SETUP_USER_BEGIN,
  SETUP_USER_SUCCESS,
- SETUP_USER_ERROR
+ SETUP_USER_ERROR,
+ TOGGLE_SIDEBAR,
+ LOGOUT_USER
 } from './action';
 import reducer from './reducer'
 import axios from 'axios'
@@ -36,7 +38,8 @@ const initialState = {
  user:null,
  token:null,
  userLocation:'',
- jobLocation:''
+ jobLocation:'',
+ showSidebar:false
 }
 
 //AppContext
@@ -111,6 +114,7 @@ const AppProvider = ({children})=>{
   }
   clearAlert()
  }
+
   //setupUser
  const setupUser = async({currentUser, endPoint, alertText})=>{
    dispatch({type:SETUP_USER_BEGIN})
@@ -135,8 +139,20 @@ const AppProvider = ({children})=>{
   clearAlert()
  }
 
+  //Toggle-sidebar
+  const toggleSidebar = ()=>{
+    dispatch({type:TOGGLE_SIDEBAR})
+  }
 
- return <AppContext.Provider value={{...state, displayAlert, registerUser,loginUser,setupUser}}>
+  //logout_user
+  const logoutUser = ()=>{
+    dispatch({type:LOGOUT_USER})
+    //localStorageLater
+   removeUserFromLocalStorage()
+  }
+
+
+ return <AppContext.Provider value={{...state, displayAlert, registerUser,loginUser,setupUser, toggleSidebar, logoutUser}}>
   {children}
  </AppContext.Provider>
 }
