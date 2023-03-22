@@ -60,7 +60,6 @@ const Register = () => {
       // registerUser(currentUser)
       setupUser({currentUser, endPoint:'register', alertText:'User Created! Redirecting...'})
     }
-    console.log(values)
   }
   //useEffect
   useEffect(()=>{

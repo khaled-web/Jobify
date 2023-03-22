@@ -1,5 +1,31 @@
+//.............
+//importing
+//.............
+const Job = require('../models/job.js')
+const StatusCodes = require('http-status-codes')
+const CustomError = require('../errors')
+
+//.............
+//App.
+//.............
+
+//createJob
 const createJob = async (req, res) => {
- res.send("Create Job")
+ const {
+  position,
+  company
+ } = req.body
+ if (!position || !company) {
+  throw new CustomError.BadRequestError("Please provide all values")
+ }
+ //middleware-auth
+ req.body.createdBy = req.user.userId
+
+ const job = await Job.create(req.body)
+ res.status(StatusCodes.CREATED).json({
+  job
+ })
+ // res.send('createJob')
 }
 
 const deleteJob = async (req, res) => {
@@ -7,7 +33,14 @@ const deleteJob = async (req, res) => {
 }
 
 const getAllJobs = async (req, res) => {
- res.send("Get All Jobs")
+ const jobs = await Job.find({
+  createdBy: req.user.userId
+ })
+ res.status(StatusCodes.OK).json({
+  jobs,
+  totalJobs: jobs.length,
+  numOfPages: 1
+ })
 }
 
 const updateJob = async (req, res) => {
@@ -18,6 +51,10 @@ const showStats = async (req, res) => {
  res.send("Show stats")
 }
 
+
+//.............
+//exporting
+//.............
 module.exports = {
  createJob,
  deleteJob,

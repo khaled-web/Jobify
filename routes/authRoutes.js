@@ -8,6 +8,7 @@ const {
  loginUser,
  updateUser
 } = require('../Controllers/authController.js')
+const authenticateUser = require('../middleware/auth-JWT.js')
 
 //....
 //app
@@ -15,7 +16,7 @@ const {
 
 router.route('/register').post(registerUser)
 router.route('/login').post(loginUser)
-router.route('/updateUser').patch(updateUser)
+router.route('/updateUser').patch(authenticateUser, updateUser)
 
 //.........
 //exporting

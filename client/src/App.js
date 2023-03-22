@@ -27,9 +27,9 @@ function App() {
         </ProtectedRoute>
         }>
           <Route index element={<Stats/>}/>
-          <Route path='AllJobs' element={<AllJobs/>}/>
-          <Route path='AddJob' element={<AddJob/>}/>
-          <Route path='Profile' element={<Profile/>}/>
+          <Route path='all-jobs' element={<AllJobs/>}/>
+          <Route path='add-job' element={<AddJob/>}/>
+          <Route path='profile' element={<Profile/>}/>
         </Route>
         <Route path='/register' element={<Register/>}/>
         <Route path='/landing' element={<Landing/>}/>

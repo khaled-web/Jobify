@@ -18,6 +18,8 @@ const jobsRoutes = require('./routes/jobRoutes.js')
 //middleware
 const notFoundMiddleware = require('./middleware/not-found.js')
 const errorHandlerMiddleware = require('./middleware/error-handler.js')
+//authenticateUser
+const authenticateUser = require('./middleware/auth-JWT.js')
 
 
 //.........
@@ -45,7 +47,7 @@ app.get('/api/v1', (req, res) => {
 })
 //routes
 app.use('/api/v1/auth', authRoutes)
-app.use('/api/v1/job', jobsRoutes)
+app.use('/api/v1/job', authenticateUser, jobsRoutes)
 
 //middleware
 app.use(notFoundMiddleware)

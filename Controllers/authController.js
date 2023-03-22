@@ -4,7 +4,6 @@
 const User = require('../models/user.js')
 const StatusCodes = require('http-status-codes')
 const CustomError = require('../errors')
-const user = require('../models/user.js')
 //....
 //app
 //....
@@ -85,7 +84,32 @@ const loginUser = async (req, res) => {
 }
 //updateUser
 const updateUser = async (req, res) => {
- res.send("update User");
+ const {
+  name,
+  email,
+  lastName,
+  location
+ } = req.body
+ if (!name || !email || !lastName || !location) {
+  throw new CustomError.BadRequestError('Please provide all values')
+ }
+ const user = await User.findOne({
+  _id: req.user.userId
+ })
+
+ user.name = name
+ user.email = email
+ user.lastName = lastName
+ user.location = location
+ await user.save()
+
+ const token = user.createJWT()
+
+ res.status(StatusCodes.OK).json({
+  user,
+  token,
+  location: user.location
+ })
 }
 
 //.........

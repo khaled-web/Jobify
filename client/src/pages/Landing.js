@@ -1,6 +1,6 @@
 import React from 'react'
 import Logo from '../components/Logo'
-import main from '../assets/images/main.svg'
+import main from '../assets/images/SearchJobs.svg'
 import Wrapper from '../assets/wrappers/LandingPage'
 import {Link} from 'react-router-dom'
 
