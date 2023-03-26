@@ -21,7 +21,12 @@ import {
  CREATE_JOB_SUCCESS,
  CREATE_JOB_ERROR,
  GET_JOBS_BEGIN,
- GET_JOBS_SUCCESS
+ GET_JOBS_SUCCESS,
+ SET_EDIT_JOB,
+ DELETE_JOB_BEGIN,
+ EDIT_JOB_BEGIN,
+ EDIT_JOB_SUCCESS,
+ EDIT_JOB_ERROR
 } from './action'
 
 const reducer = (state, action) => {
@@ -248,6 +253,62 @@ const reducer = (state, action) => {
    totalJobs: action.payload.totalJobs,
    numOfPages: action.payload.numOfPages,
   };
+ }
+ //EditJobs
+ if (action.type === SET_EDIT_JOB) {
+  const job = state.jobs.find((job) => job._id === action.payload.id)
+  const {
+   company,
+   position,
+   status,
+   jobType,
+   jobLocation,
+   _id
+  } = job
+  return {
+   ...state,
+   isEditing: true,
+   editJobId: _id,
+   company,
+   position,
+   status,
+   jobType,
+   jobLocation
+  }
+ }
+ //DeleteJob
+ if (action.type === DELETE_JOB_BEGIN) {
+  return {
+   ...state,
+   isLoading: true
+  };
+ }
+ //editJob-Began
+ if (action.type === EDIT_JOB_BEGIN) {
+  return {
+   ...state,
+   isLoading: true
+  }
+ }
+ //editJob-success
+ if (action.type === EDIT_JOB_SUCCESS) {
+  return {
+   ...state,
+   isLoading: false,
+   showAlert: true,
+   alertType: 'success',
+   alertText: ' Job Updated...'
+  }
+ }
+ //editJob-error
+ if (action.type === EDIT_JOB_ERROR) {
+  return {
+   ...state,
+   isLoading: false,
+   showAlert: true,
+   alertType: 'danger',
+   alertText: action.payload.msg
+  }
  }
 
 

@@ -31,7 +31,12 @@ import {
  CREATE_JOB_SUCCESS,
  CREATE_JOB_ERROR,
   GET_JOBS_BEGIN,
- GET_JOBS_SUCCESS
+ GET_JOBS_SUCCESS,
+ SET_EDIT_JOB,
+ DELETE_JOB_BEGIN,
+ EDIT_JOB_BEGIN,
+ EDIT_JOB_SUCCESS,
+ EDIT_JOB_ERROR
 } from './action';
 import reducer from './reducer'
 import axios from 'axios'
@@ -296,12 +301,58 @@ authFetch.interceptors.response.use(
   }
   clearAlert()
 }
+//editJob
+const setEditJob = (id)=>{
+  dispatch({
+    type:SET_EDIT_JOB,
+    payload:{id}
+  })
+}
+const editJob = async()=>{
+  dispatch({type:EDIT_JOB_BEGIN})
+  try {
+    const {position, company, jobLocation, status, jobType}=state
+    await authFetch.patch(`/job/${state.editJobId}`,{
+      position,company, jobLocation, status, jobType
+    })
+    dispatch({type:EDIT_JOB_SUCCESS})
+    dispatch({type:CLEAR_VALUES})
+  } catch (error) {
+    if(error.response.status === 401) return
+    dispatch({type:EDIT_JOB_ERROR,payload:{msg:error.response.data.msg}})
+  }
+  clearAlert()
+}
+//deleteJob
+const deleteJob = async (jobId)=>{
+  dispatch({
+    type:DELETE_JOB_BEGIN
+  })
+  try {
+    await authFetch.delete(`/job/${jobId}`)
+    getJobs()
+  } catch (error) {
+    console.log(error.response)
+    // logoutUser()
+  }
+}
 
-useEffect(() => {
-  getJobs()
-}, [])
-
- return <AppContext.Provider value={{...state, displayAlert, registerUser,loginUser,setupUser, toggleSidebar, logoutUser,updateUser,handleChange,clearValue, createJob,getJobs}}>
+ return <AppContext.Provider value={{
+  ...state, 
+  displayAlert, 
+  registerUser,
+  loginUser,
+  setupUser, 
+  toggleSidebar, 
+  logoutUser,
+  updateUser,
+  handleChange,
+  clearValue, 
+  createJob,getJobs,
+  setEditJob,
+  deleteJob,
+  editJob
+  }}>
   {children}
  </AppContext.Provider>
 }

@@ -11,6 +11,7 @@ import {UseAppContext} from '../context/appContext.js'
 //.............
 const JobContainer = () => {
   const {getJobs, jobs, isLoading, page, totalJobs}=UseAppContext()
+  
   useEffect(()=>{
     getJobs()
   },[])

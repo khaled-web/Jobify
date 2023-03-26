@@ -25,7 +25,8 @@ const AddJob = () => {
     isEditing,
     handleChange,
     clearValue,
-    createJob
+    createJob,
+    editJob
   } = UseAppContext()
   //handleJobInput
   const handleJobInput = (e)=>{
@@ -42,7 +43,7 @@ const AddJob = () => {
     //   return
     // }
     if(isEditing){
-      //eventually editJob()
+      editJob()
       return
     }
     createJob()
@@ -62,7 +63,7 @@ const AddJob = () => {
           {/* jobStatus */}
           <FormRowSelect name='status' value ={status} handleChange ={handleJobInput} list={statusOption}/>
           {/* jobType */}
-          <FormRowSelect labelText='job Type' name='job Type' value ={jobType} handleChange ={handleJobInput} list={jobTypeOptions}/>
+          <FormRowSelect name='jobType' value ={jobType} handleChange ={handleJobInput} list={jobTypeOptions}/>
           {/* btn-container */}
           <div className="btn-container">
             <button type='submit' className='btn btn-block submit-btn' onClick={handleSubmit} disabled={isLoading}>
