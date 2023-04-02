@@ -26,7 +26,8 @@ import {
  DELETE_JOB_BEGIN,
  EDIT_JOB_BEGIN,
  EDIT_JOB_SUCCESS,
- EDIT_JOB_ERROR
+ EDIT_JOB_ERROR,
+ CLEAR_FILTERS
 } from './action'
 
 const reducer = (state, action) => {
@@ -308,6 +309,17 @@ const reducer = (state, action) => {
    showAlert: true,
    alertType: 'danger',
    alertText: action.payload.msg
+  }
+ }
+ //clearFilters
+ if (action.type === CLEAR_FILTERS) {
+  return {
+   ...state,
+   search: '',
+   searchStatus: 'all',
+   searchType: 'all',
+   sort: 'latest',
+
   }
  }
 

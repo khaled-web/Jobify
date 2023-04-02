@@ -10,11 +10,11 @@ import {UseAppContext} from '../context/appContext.js'
 //APP
 //.............
 const JobContainer = () => {
-  const {getJobs, jobs, isLoading, page, totalJobs}=UseAppContext()
+  const {getJobs, jobs, isLoading, page, totalJobs,search,searchStatus,searchType,sort}=UseAppContext()
   
   useEffect(()=>{
     getJobs()
-  },[])
+  },[search, searchStatus, searchType, sort])
 
   if(isLoading){
     <Loading center/>

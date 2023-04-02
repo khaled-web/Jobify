@@ -9,7 +9,11 @@ var StatusCodes = require('http-status-codes');
 
 var CustomError = require('../errors');
 
-var checkPermissions = require('../utils/checkPermission.js'); //.............
+var checkPermissions = require('../utils/checkPermission.js');
+
+var mongoose = require('mongoose');
+
+var moment = require('moment'); //.............
 //App.
 //.............
 //createJob
@@ -53,17 +57,62 @@ var createJob = function createJob(req, res) {
 
 
 var getAllJobs = function getAllJobs(req, res) {
-  var jobs;
+  var _req$query, search, status, jobType, sort, queryObject, result, jobs;
+
   return regeneratorRuntime.async(function getAllJobs$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
-          _context2.next = 2;
-          return regeneratorRuntime.awrap(Job.find({
+          // const jobs = await Job.find({
+          //   createdBy: req.user.userId
+          // })
+          // res.status(StatusCodes.OK).json({
+          //   jobs,
+          //   totalJobs: jobs.length,
+          //   numOfPages: 1
+          // })
+          _req$query = req.query, search = _req$query.search, status = _req$query.status, jobType = _req$query.jobType, sort = _req$query.sort;
+          queryObject = {
             createdBy: req.user.userId
-          }));
+          };
 
-        case 2:
+          if (status !== 'all') {
+            queryObject.status = status;
+          }
+
+          if (jobType !== 'all') {
+            queryObject.jobType = jobType;
+          }
+
+          if (search) {
+            queryObject.position = {
+              $regex: search,
+              $options: 'i'
+            };
+          }
+
+          result = Job.find(queryObject); //chain sort conditions
+
+          if (sort === 'latest') {
+            result = result.sort('-createdAt');
+          }
+
+          if (sort === 'oldest') {
+            result = result.sort('createdAt');
+          }
+
+          if (sort === 'a-z') {
+            result = result.sort('position');
+          }
+
+          if (sort === 'z-a') {
+            result = result.sort('-position');
+          }
+
+          _context2.next = 12;
+          return regeneratorRuntime.awrap(result);
+
+        case 12:
           jobs = _context2.sent;
           res.status(StatusCodes.OK).json({
             jobs: jobs,
@@ -71,7 +120,7 @@ var getAllJobs = function getAllJobs(req, res) {
             numOfPages: 1
           });
 
-        case 4:
+        case 14:
         case "end":
           return _context2.stop();
       }
@@ -179,13 +228,34 @@ var deleteJob = function deleteJob(req, res) {
 
 
 var showStats = function showStats(req, res) {
+  var stats;
   return regeneratorRuntime.async(function showStats$(_context5) {
     while (1) {
       switch (_context5.prev = _context5.next) {
         case 0:
-          res.send("Show stats");
+          _context5.next = 2;
+          return regeneratorRuntime.awrap(Job.aggregate([{
+            $match: {
+              createdBy: mongoose.Types.ObjectId(req.user.userId)
+            }
+          } // {
+          //   $group: {
+          //     _id: '$status',
+          //     count: {
+          //       $sum: 1
+          //     }
+          //   }
+          // }
+          ]));
 
-        case 1:
+        case 2:
+          stats = _context5.sent;
+          console.log(stats);
+          res.status(StatusCodes.OK).json({
+            stats: stats
+          });
+
+        case 5:
         case "end":
           return _context5.stop();
       }

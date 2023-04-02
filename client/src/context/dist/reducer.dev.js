@@ -290,6 +290,16 @@ var reducer = function reducer(state, action) {
       alertType: 'danger',
       alertText: action.payload.msg
     });
+  } //clearFilters
+
+
+  if (action.type === _action.CLEAR_FILTERS) {
+    return _objectSpread({}, state, {
+      search: '',
+      searchStatus: 'all',
+      searchType: 'all',
+      sort: 'latest'
+    });
   }
 
   throw new Error("no such action : ".concat(action.type));

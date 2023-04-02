@@ -36,7 +36,8 @@ import {
  DELETE_JOB_BEGIN,
  EDIT_JOB_BEGIN,
  EDIT_JOB_SUCCESS,
- EDIT_JOB_ERROR
+ EDIT_JOB_ERROR,
+ CLEAR_FILTERS
 } from './action';
 import reducer from './reducer'
 import axios from 'axios'
@@ -74,7 +75,13 @@ const initialState = {
  jobs:[],
  totalJobs:0,
  numOfPages:1,
- page:1
+ page:1,
+ //search
+ search:'',
+ searchStatus:'all',
+ searchType:'all',
+ sort:'latest',
+ sortOptions:['latest', 'oldest', 'a-z', 'z-a']
 }
 
 //AppContext
@@ -280,8 +287,11 @@ authFetch.interceptors.response.use(
   }
   //getJob
   const getJobs = async () => {
-  let url = `/job`
-
+    const {search, searchStatus, searchType, sort}=state
+  let url = `/job?status=${searchStatus}&jobType=${searchType}&sort=${sort}`
+  if(search){
+    url = url + `&search=${search}`
+  }
   dispatch({ type: GET_JOBS_BEGIN })
   try {
     const { data } = await authFetch(url)
@@ -336,6 +346,10 @@ const deleteJob = async (jobId)=>{
     // logoutUser()
   }
 }
+//clearFilters
+const clearFilters = ()=>{
+  dispatch({type:CLEAR_FILTERS})
+}
 
  return <AppContext.Provider value={{
   ...state, 
@@ -351,7 +365,8 @@ const deleteJob = async (jobId)=>{
   createJob,getJobs,
   setEditJob,
   deleteJob,
-  editJob
+  editJob,
+  clearFilters
   }}>
   {children}
  </AppContext.Provider>
