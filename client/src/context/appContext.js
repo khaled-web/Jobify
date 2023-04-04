@@ -37,7 +37,10 @@ import {
  EDIT_JOB_BEGIN,
  EDIT_JOB_SUCCESS,
  EDIT_JOB_ERROR,
- CLEAR_FILTERS
+ CLEAR_FILTERS,
+ CHANGE_PAGE,
+ SHOW_STATS_BEGIN,
+ SHOW_STATS_SUCCESS
 } from './action';
 import reducer from './reducer'
 import axios from 'axios'
@@ -81,7 +84,10 @@ const initialState = {
  searchStatus:'all',
  searchType:'all',
  sort:'latest',
- sortOptions:['latest', 'oldest', 'a-z', 'z-a']
+ sortOptions:['latest', 'oldest', 'a-z', 'z-a'],
+ //stats
+ stats:{},
+ monthlyApplications:[]
 }
 
 //AppContext
@@ -247,6 +253,7 @@ authFetch.interceptors.response.use(
       clearAlert()
     }
   }
+
   //handleChange
   const handleChange = ({name, value})=>{
     dispatch({
@@ -254,12 +261,14 @@ authFetch.interceptors.response.use(
       payload:{name, value}
     })
   }
+
   //clearValue
   const clearValue = ()=>{
     dispatch({
       type:CLEAR_VALUES
     })
   }
+
   //createJob
   const createJob = async()=>{
     dispatch({type:CREATE_JOB_BEGIN})
@@ -285,10 +294,11 @@ authFetch.interceptors.response.use(
       clearAlert()
     }
   }
+
   //getJob
   const getJobs = async () => {
-    const {search, searchStatus, searchType, sort}=state
-  let url = `/job?status=${searchStatus}&jobType=${searchType}&sort=${sort}`
+    const {page,search, searchStatus, searchType, sort}=state
+  let url = `/job?page=${page}&status=${searchStatus}&jobType=${searchType}&sort=${sort}`
   if(search){
     url = url + `&search=${search}`
   }
@@ -311,6 +321,7 @@ authFetch.interceptors.response.use(
   }
   clearAlert()
 }
+
 //editJob
 const setEditJob = (id)=>{
   dispatch({
@@ -333,6 +344,7 @@ const editJob = async()=>{
   }
   clearAlert()
 }
+
 //deleteJob
 const deleteJob = async (jobId)=>{
   dispatch({
@@ -346,10 +358,37 @@ const deleteJob = async (jobId)=>{
     // logoutUser()
   }
 }
+
 //clearFilters
 const clearFilters = ()=>{
   dispatch({type:CLEAR_FILTERS})
 }
+
+//changePage
+const changePage = (page)=>{
+  dispatch({
+    type:CHANGE_PAGE,
+    payload:{page}
+  })
+}
+
+//showStats
+const showStats = async()=>{
+  dispatch({type:SHOW_STATS_BEGIN})
+  try {
+    const {data} = await authFetch('/job/showStats')
+    dispatch({
+      type:SHOW_STATS_SUCCESS,
+      payload:{
+        stats:data.defaultStats,
+        monthlyApplications:data.monthlyApplications
+      }})
+  } catch (error) {
+    console.log(error.response)
+  }
+  clearAlert()
+}
+
 
  return <AppContext.Provider value={{
   ...state, 
@@ -366,7 +405,9 @@ const clearFilters = ()=>{
   setEditJob,
   deleteJob,
   editJob,
-  clearFilters
+  clearFilters,
+  changePage,
+  showStats
   }}>
   {children}
  </AppContext.Provider>

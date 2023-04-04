@@ -27,7 +27,10 @@ import {
  EDIT_JOB_BEGIN,
  EDIT_JOB_SUCCESS,
  EDIT_JOB_ERROR,
- CLEAR_FILTERS
+ CLEAR_FILTERS,
+ CHANGE_PAGE,
+ SHOW_STATS_BEGIN,
+ SHOW_STATS_SUCCESS
 } from './action'
 
 const reducer = (state, action) => {
@@ -194,6 +197,7 @@ const reducer = (state, action) => {
  if (action.type === HANDLE_CHANGE) {
   return {
    ...state,
+   page: 1,
    [action.payload.name]: action.payload.value
   }
  }
@@ -320,6 +324,30 @@ const reducer = (state, action) => {
    searchType: 'all',
    sort: 'latest',
 
+  }
+ }
+ //changePage
+ if (action.type === CHANGE_PAGE) {
+  return {
+   ...state,
+   page: action.payload.page
+  }
+ }
+ //ShowStatsBegin
+ if (action.type === SHOW_STATS_BEGIN) {
+  return {
+   ...state,
+   isLoading: true,
+   showAlert: false
+  }
+ }
+ //showStatsSuccess
+ if (action.type === SHOW_STATS_SUCCESS) {
+  return {
+   ...state,
+   isLoading: false,
+   stats: action.payload.stats,
+   monthlyApplications: action.payload.monthlyApplications
   }
  }
 

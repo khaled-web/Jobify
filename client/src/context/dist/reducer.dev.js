@@ -175,7 +175,9 @@ var reducer = function reducer(state, action) {
 
 
   if (action.type === _action.HANDLE_CHANGE) {
-    return _objectSpread({}, state, _defineProperty({}, action.payload.name, action.payload.value));
+    return _objectSpread({}, state, _defineProperty({
+      page: 1
+    }, action.payload.name, action.payload.value));
   } //ClearValue
 
 
@@ -299,6 +301,30 @@ var reducer = function reducer(state, action) {
       searchStatus: 'all',
       searchType: 'all',
       sort: 'latest'
+    });
+  } //changePage
+
+
+  if (action.type === _action.CHANGE_PAGE) {
+    return _objectSpread({}, state, {
+      page: action.payload.page
+    });
+  } //ShowStatsBegin
+
+
+  if (action.type === _action.SHOW_STATS_BEGIN) {
+    return _objectSpread({}, state, {
+      isLoading: true,
+      showAlert: false
+    });
+  } //showStatsSuccess
+
+
+  if (action.type === _action.SHOW_STATS_SUCCESS) {
+    return _objectSpread({}, state, {
+      isLoading: false,
+      stats: action.payload.stats,
+      monthlyApplications: action.payload.monthlyApplications
     });
   }
 

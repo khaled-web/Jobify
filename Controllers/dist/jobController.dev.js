@@ -57,20 +57,12 @@ var createJob = function createJob(req, res) {
 
 
 var getAllJobs = function getAllJobs(req, res) {
-  var _req$query, search, status, jobType, sort, queryObject, result, jobs;
+  var _req$query, search, status, jobType, sort, queryObject, result, page, limit, skip, jobs, totalJobs, numOfPages;
 
   return regeneratorRuntime.async(function getAllJobs$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
-          // const jobs = await Job.find({
-          //   createdBy: req.user.userId
-          // })
-          // res.status(StatusCodes.OK).json({
-          //   jobs,
-          //   totalJobs: jobs.length,
-          //   numOfPages: 1
-          // })
           _req$query = req.query, search = _req$query.search, status = _req$query.status, jobType = _req$query.jobType, sort = _req$query.sort;
           queryObject = {
             createdBy: req.user.userId
@@ -107,20 +99,31 @@ var getAllJobs = function getAllJobs(req, res) {
 
           if (sort === 'z-a') {
             result = result.sort('-position');
-          }
+          } //setup pagination
 
-          _context2.next = 12;
+
+          page = Number(req.query.page) || 1;
+          limit = Number(req.query.limit) || 10;
+          skip = (page - 1) * limit;
+          result = result.skip(skip).limit(limit);
+          _context2.next = 16;
           return regeneratorRuntime.awrap(result);
 
-        case 12:
+        case 16:
           jobs = _context2.sent;
+          _context2.next = 19;
+          return regeneratorRuntime.awrap(Job.countDocuments(queryObject));
+
+        case 19:
+          totalJobs = _context2.sent;
+          numOfPages = Math.ceil(totalJobs / limit);
           res.status(StatusCodes.OK).json({
             jobs: jobs,
-            totalJobs: jobs.length,
-            numOfPages: 1
+            totalJobs: totalJobs,
+            numOfPages: numOfPages
           });
 
-        case 14:
+        case 22:
         case "end":
           return _context2.stop();
       }
@@ -228,34 +231,42 @@ var deleteJob = function deleteJob(req, res) {
 
 
 var showStats = function showStats(req, res) {
-  var stats;
+  var stats, defaultStats;
   return regeneratorRuntime.async(function showStats$(_context5) {
     while (1) {
       switch (_context5.prev = _context5.next) {
         case 0:
           _context5.next = 2;
           return regeneratorRuntime.awrap(Job.aggregate([{
-            $match: {
-              createdBy: mongoose.Types.ObjectId(req.user.userId)
+            $group: {
+              _id: '$status',
+              count: {
+                $sum: 1
+              }
             }
-          } // {
-          //   $group: {
-          //     _id: '$status',
-          //     count: {
-          //       $sum: 1
-          //     }
-          //   }
-          // }
-          ]));
+          }]));
 
         case 2:
           stats = _context5.sent;
+          console.log(req.user.userId);
           console.log(stats);
+          stats = stats.reduce(function (acc, curr) {
+            var title = curr._id,
+                count = curr.count;
+            acc[title] = count;
+            return acc;
+          }, {});
+          defaultStats = {
+            pending: stats.pending || 0,
+            interview: stats.interview || 0,
+            declined: stats.declined || 0
+          };
           res.status(StatusCodes.OK).json({
-            stats: stats
+            defaultStats: defaultStats,
+            monthlyApplications: []
           });
 
-        case 5:
+        case 8:
         case "end":
           return _context5.stop();
       }

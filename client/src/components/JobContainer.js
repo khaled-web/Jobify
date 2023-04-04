@@ -6,15 +6,16 @@ import Loading from './Loading.js'
 import Job from './Job.js'
 import Wrapper from '../assets/wrappers/JobsContainer'
 import {UseAppContext} from '../context/appContext.js'
+import PageBtnContainer from './PageBtnContainer.js'
 //.............
 //APP
 //.............
 const JobContainer = () => {
-  const {getJobs, jobs, isLoading, page, totalJobs,search,searchStatus,searchType,sort}=UseAppContext()
+  const {getJobs, jobs, isLoading, page, totalJobs,search,searchStatus,searchType,sort,numOfPages}=UseAppContext()
   
   useEffect(()=>{
     getJobs()
-  },[search, searchStatus, searchType, sort])
+  },[page,search, searchStatus, searchType, sort])
 
   if(isLoading){
     <Loading center/>
@@ -36,6 +37,7 @@ const JobContainer = () => {
         })}
       </div>
       {/* pagination buttons */}
+      {numOfPages > 1 && <PageBtnContainer/>}
     </Wrapper>
   )
 }

@@ -7,7 +7,10 @@ import Navbar from './Navbar';
 import FormRowSelect from './FormRowSelect';
 import SearchContainer from './SearchContainer';
 import JobContainer from './JobContainer';
-
+import StatusContainer from './StatusContainer'
+import ChartContainer from './ChartContainer'
+import Loading from './Loading'
+import StatItem from './StatItem'
 
 export {
  Logo,
@@ -18,5 +21,9 @@ export {
  Navbar,
  FormRowSelect,
  SearchContainer,
- JobContainer
+ JobContainer,
+ StatusContainer,
+ ChartContainer,
+ Loading,
+ StatItem
 }
